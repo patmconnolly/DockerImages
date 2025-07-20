@@ -1,0 +1,10 @@
+FROM patmconnolly/compiler:el9
+ARG VERSION
+RUN dnf install -y openssl cyrus-sasl groff-base diffutils
+RUN curl -O https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-${VERSION}.tgz
+RUN gunzip -c openldap-${VERSION}.tgz | tar xfB -
+RUN rm openldap-${VERSION}.tgz
+WORKDIR /openldap-${VERSION}/
+RUN ./configure; make depend; make
+RUN make test
+RUN make install
