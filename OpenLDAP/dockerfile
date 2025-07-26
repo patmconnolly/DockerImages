@@ -5,6 +5,12 @@ RUN curl -O https://www.openldap.org/software/download/OpenLDAP/openldap-release
 RUN gunzip -c openldap-${VERSION}.tgz | tar xfB -
 RUN rm openldap-${VERSION}.tgz
 WORKDIR /openldap-${VERSION}/
-RUN ./configure; make depend; make
-RUN make test
-RUN make install
+RUN ./configure; make depend; make; make test; make install
+WORKDIR /
+RUN ulimit -n 1024
+EXPOSE 389
+ENV suffix="dc=example,dc=com"
+ENV rootdn="cn=Manager,dc=example,dc=com"
+ENV rootpw="secret"
+COPY entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh", "$suffix", "$rootdn", "$rootpw"]
