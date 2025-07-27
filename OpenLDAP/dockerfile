@@ -13,4 +13,5 @@ ENV suffix="dc=example,dc=com"
 ENV rootdn="cn=Manager,dc=example,dc=com"
 ENV rootpw="secret"
 COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/bin/bash", "-c", "/entrypoint.sh $suffix $rootdn $rootpw && /usr/local/libexec/slapd"]
