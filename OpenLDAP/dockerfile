@@ -7,11 +7,11 @@ RUN rm openldap-${VERSION}.tgz
 WORKDIR /openldap-${VERSION}/
 RUN ./configure; make depend; make; make test; make install
 WORKDIR /
-RUN ulimit -n 1024
 EXPOSE 389
-ENV suffix="dc=example,dc=com"
-ENV rootdn="cn=Manager,dc=example,dc=com"
-ENV rootpw="secret"
+ENV SUFFIX="dc=example,dc=com"
+ENV ROOTDN="cn=Manager,dc=example,dc=com"
+ENV ROOTPW="secret"
+ENV DEBUGLEVEL="0"
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/bin/bash", "-c", "/entrypoint.sh $suffix $rootdn $rootpw && /usr/local/libexec/slapd"]
+ENTRYPOINT ["/bin/bash", "-c", "/entrypoint.sh $SUFFIX $ROOTDN $ROOTPW && ulimit -n 1024 && /usr/local/libexec/slapd -d $DEBUGLEVEL"]
