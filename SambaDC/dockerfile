@@ -1,0 +1,10 @@
+FROM ubuntu:latest
+RUN apt-get update && apt-get install -y acl attr samba winbind libpam-winbind libnss-winbind krb5-config krb5-user dnsutils python3-setproctitle
+ENV REALM="samdom.example.com"
+ENV DOMAIN="SAMDOM"
+ENV ADMINPASS="Passw0rd"
+RUN ln -s -T /etc/samba /SAMBA_CONFIG
+RUN ln -s -T /var/lib/samba /SAMBA_DATA
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/bin/bash", "-c", "/entrypoint.sh $REALM $DOMAIN $ADMINPASS && /usr/sbin/samba --interactive"]
